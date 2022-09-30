@@ -34,18 +34,17 @@ const styles = StyleSheet.create({
   },
   appName: {
     top: 20,
-    fontFamily: 'Averia Libre',
+    fontFamily: 'AveriaLibre-Bold',
     textAlign: 'center',
     color: '#419ED7',
     fontSize: 42,
     lineHeight: 84,
-    fontWeight: "bold",
     textDecorationLine: "underline"
   },
   text: {
     top: 100,
     margin: 20,
-    fontFamily: 'Averia Libre',
+    fontFamily: 'AveriaLibre-Regular',
     textAlign: 'center',
     color: '#419ED7',
     fontSize: 32,
