@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
+import MyInput from "./MyInput"
 
 const background = require('../src/images/background.png')
 const icon = require('../src/images/vaccine-icon.png')
@@ -9,19 +10,21 @@ const Home = () => (
   <View style={styles.container}>
 
     <ImageBackground source={background} resizeMode="cover" style={styles.image}>
-    <LinearGradient colors={['#54837E33', '#FFFFFF9E', '#DDE6E5AD','#3B5E5A82']} style={styles.image}>
-        
-        <Image
-        style={styles.logo}
-        source={icon}
-      />
-      <Text style={styles.appName}>MyHealth</Text>
-      <Text style={styles.text}>Controle as suas vacinas e fique seguro</Text>
+      <LinearGradient colors={['#54837E53', '#FFFFFF99', '#DDE6E5AD', '#3B5E5A82']} style={styles.image}>
 
-      
-    </LinearGradient>
+        <Image
+          style={styles.logo}
+          source={icon}
+        />
+        <Text style={styles.appName}>MyHealth</Text>
+        <Text style={styles.text}>Controle as suas vacinas e fique seguro</Text>
+        <View style={{flexDirection: 'column', marginHorizontal: '5%', marginVertical: '30%'}}>
+          <MyInput label={'E-Mail'}/>
+          <MyInput label={'Senha'} />
+        </View>
+      </LinearGradient>
     </ImageBackground>
-    
+
   </View>
 );
 
