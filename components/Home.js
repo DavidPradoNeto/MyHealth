@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native"
+import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
 import MyInput from "./MyInput"
 
@@ -22,6 +22,7 @@ const Home = () => (
           <MyInput label={'E-Mail'}/>
           <MyInput label={'Senha'} />
         </View>
+        
       </LinearGradient>
     </ImageBackground>
 
