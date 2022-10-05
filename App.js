@@ -9,7 +9,7 @@ const Stack = createStackNavigator()
 const App = () => {
   return (
     <NavigationContainer>
-      <StatusBar hidden />
+      {/* <StatusBar hidden /> */}
       
       <Stack.Navigator>
         <Stack.Screen

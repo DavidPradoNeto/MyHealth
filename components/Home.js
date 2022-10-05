@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native"
+import { Button, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
 import MyInput from "./MyInput"
 
@@ -10,7 +10,11 @@ const Home = () => (
   <View style={styles.container}>
 
     <ImageBackground source={background} resizeMode="cover" style={styles.image}>
-      <LinearGradient colors={['#54837E53', '#FFFFFF99', '#DDE6E5AD', '#3B5E5A82']} style={styles.image}>
+      <LinearGradient 
+          start={{x: 0, y: 1}} 
+          end={{x: 0, y: 0}}  
+          colors={['rgba(59, 94, 90, 0.9)',  'rgba(221, 230, 229, 0.9)','rgba(255, 255, 255, 0.62)' , 'rgba(84, 131, 126, 0.6)']} 
+          style={styles.image}>
 
         <Image
           style={styles.logo}
@@ -18,11 +22,22 @@ const Home = () => (
         />
         <Text style={styles.appName}>MyHealth</Text>
         <Text style={styles.text}>Controle as suas vacinas e fique seguro</Text>
-        <View style={{flexDirection: 'column', marginHorizontal: '5%', marginVertical: '30%'}}>
-          <MyInput label={'E-Mail'}/>
+        <View style={styles.inputs}>
+          <MyInput label={'E-Mail'} />
           <MyInput label={'Senha'} />
+          <TouchableOpacity style={styles.buttonEntrar}>
+            <Text style={styles.textButton}>Entrar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.buttonCriar}>
+            <Text style={styles.textButton}>Criar minha conta</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.buttonRecuperar}>
+            <Text style={styles.textEsqueci}>Esqueci minha senha</Text>
+          </TouchableOpacity>
         </View>
-        
+
       </LinearGradient>
     </ImageBackground>
 
@@ -46,7 +61,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline"
   },
   text: {
-    top: 100,
+    top: 50,
     margin: 20,
     fontFamily: 'AveriaLibre-Regular',
     textAlign: 'center',
@@ -59,6 +74,63 @@ const styles = StyleSheet.create({
     height: 50,
     top: 40,
     left: 45
+  },
+  inputs: {
+    flexDirection: 'column',
+    marginHorizontal: '8%',
+    marginVertical: '20%'
+  },
+  buttonEntrar:{
+    backgroundColor: '#49B976',
+    borderColor: '#37BD6D',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    width: 188,
+    height: 50,
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+    elevation: 4,
+    shadowColor: '#000000',
+  },
+  buttonCriar:{
+    backgroundColor: '#419ED7',
+    borderColor: '#419ED7',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    width: 285,
+    height: 50,
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
+    elevation: 4,
+    shadowColor: '#000000',
+  },
+  buttonRecuperar:{
+    backgroundColor: '#B0CCDE',
+    borderColor: '#B0CCDE',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    width: 285,
+    height: 37,
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+    elevation: 4,
+    shadowColor: '#000000',
+  },
+  textButton: {
+    fontFamily: 'AveriaLibre-Regular',
+    fontSize: 28,
+    color: 'white'
+  },
+  textEsqueci: {
+    fontFamily: 'AveriaLibre-Regular',
+    fontSize: 24,
+    color: 'white'
   }
 });
 
