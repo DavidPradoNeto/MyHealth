@@ -13,15 +13,15 @@ const App = () => {
       
       <Stack.Navigator>
         <Stack.Screen
+          name="Logado"
+          component={Logado}
+        />
+        <Stack.Screen
           name="Home"
           component={Home}
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen
-          name="Logado"
-          component={Logado}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   )
