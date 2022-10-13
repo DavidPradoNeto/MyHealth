@@ -1,29 +1,35 @@
 import React from "react";
-import Home from './components/Home'
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import Logado from "./components/Logado";
-import { ImageBackground, StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import Cadastro from "./screens/Cadastro";
+import Login from "./screens/Login";
+
 
 const Stack = createStackNavigator()
 const App = () => {
   return (
     <NavigationContainer>
-      {/* <StatusBar hidden /> */}
-      
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Logado"
-          component={Logado}
-        />
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        />
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen
+          name="Login"
+          component={Login}
+      />  
+      <Stack.Screen
+          name="Cadastrar"
+          component={Cadastro}
+      />  
 
       </Stack.Navigator>
-    </NavigationContainer>
+
+</NavigationContainer >
+
+
+
+
+
+
+
   )
 }
 
