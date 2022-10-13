@@ -1,15 +1,36 @@
-import React from "react";
-import { Button, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { signInWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
-import MyInput from "../components/MyInput"
+import { auth } from "../config/firebase";
 
 const background = require('../src/images/background.png')
 const icon = require('../src/images/vaccine-icon.png')
 
+
 const Login = (props) => {
 
+
+  const [email, setEmail] = useState()
+  const [senha, setSenha] = useState()
+  
   const NovoUsuario = () => {
     props.navigation.navigate('Cadastrar')
+  }
+
+  const RecuperaSenha = () => {
+    props.navigation.navigate('Recuperar')
+  }
+
+
+  const autenticarUsuario = () => {
+    signInWithEmailAndPassword(auth, email, senha)
+      .then((userCredential) => {
+        props.navigation.navigate('Logado')
+      })
+      .catch(() => {
+        console.log("Falha ao autenticar: " + error.message)
+      })
   }
 
 
@@ -30,9 +51,18 @@ const Login = (props) => {
           <Text style={styles.appName}>MyHealth</Text>
           <Text style={styles.text}>Controle as suas vacinas e fique seguro</Text>
           <View style={styles.inputs}>
-            <MyInput label={'E-Mail'} />
-            <MyInput label={'Senha'} />
-            <TouchableOpacity style={styles.buttonEntrar}>
+            
+            <View style={styles.input}>
+              <Text style={styles.texto}>E-mail</Text>
+              <TextInput style={styles.textInput} value={email} onChangeText={setEmail} keyboardType='email-address' />
+            </View>
+
+            <View style={styles.input}>
+              <Text style={styles.texto}>Senha </Text>
+              <TextInput style={styles.textInput} value={senha} secureTextEntry={true} onChangeText={setSenha} textContentType='newPassword' />
+            </View>
+
+            <TouchableOpacity style={styles.buttonEntrar} onPress={autenticarUsuario}>
               <Text style={styles.textButton}>Entrar</Text>
             </TouchableOpacity>
 
@@ -40,7 +70,7 @@ const Login = (props) => {
               <Text style={styles.textButton}>Criar minha conta</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttonRecuperar}>
+            <TouchableOpacity style={styles.buttonRecuperar} onPress={RecuperaSenha}>
               <Text style={styles.textEsqueci}>Esqueci minha senha</Text>
             </TouchableOpacity>
           </View>
@@ -59,6 +89,13 @@ const styles = StyleSheet.create({
   image: {
     flex: 1
   },
+  input: {
+      paddingHorizontal: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: '2%',
+      marginRight: 20
+  },
   appName: {
     top: 20,
     fontFamily: 'AveriaLibre-Bold',
@@ -76,6 +113,11 @@ const styles = StyleSheet.create({
     color: '#419ED7',
     fontSize: 32,
   },
+  texto: {
+      fontFamily: 'AveriaLibre-Regular',
+      fontSize: 16,
+      color: 'white'
+  },
   logo: {
     position: 'absolute',
     width: 50,
@@ -84,6 +126,7 @@ const styles = StyleSheet.create({
     left: 45
   },
   inputs: {
+    alignItems: 'center',
     flexDirection: 'column',
     marginHorizontal: '8%',
     marginVertical: '20%'
@@ -101,6 +144,17 @@ const styles = StyleSheet.create({
     marginTop: 50,
     elevation: 4,
     shadowColor: '#000000',
+  },
+  textInput: {
+      fontFamily: 'AveriaLibre-Regular',
+      fontSize: 18,
+      color: '#419ED7',
+      padding: 5,
+      backgroundColor: 'white',
+      borderStyle: 'solid',
+      width: 250,
+      height: 26,
+      left: 10
   },
   buttonCriar: {
     backgroundColor: '#419ED7',

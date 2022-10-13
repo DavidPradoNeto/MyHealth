@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Pressable } from 'react-native'
 import { TextInputMask } from 'react-native-masked-text'
 
@@ -21,9 +21,21 @@ const Cadastro = (props) => {
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
 
-    const [sexo, setChecked] = useState('masculino');
+    const [sexo, setChecked] = useState('masculino')
+
+    const [validaSenha, setValidaSenha] = useState(0)
+    const [borda, setBorderRed] = useState(0)
+
+
 
     const criarUsuario = () => {
+        if(senha != repeteSenha) {
+            setValidaSenha(1)
+            setBorderRed(1)
+        }else{
+            setValidaSenha(0)
+            setBorderRed(0)
+        }
         createUserWithEmailAndPassword(auth, email, senha)
             .then((userCredential) => {
                 console.log("Usuário adicionado com sucesso!")
@@ -50,13 +62,13 @@ const Cadastro = (props) => {
                 <Text style={styles.appName}>MyHealth</Text>
             </View>
 
-            <View style={{alignItems: 'flex-end', marginVertical: 50}}>
+            <View style={{ alignItems: 'flex-end', marginVertical: 50 }}>
                 <View style={styles.input}>
                     <Text style={styles.texto}>Nome completo</Text>
                     <TextInput style={styles.textInput} value={nome} onChangeText={setNome} />
                 </View>
 
-                <View style={{ flexDirection: 'row', left: 90, alignItems: 'center', marginRight: 150}}>
+                <View style={{ flexDirection: 'row', left: 90, alignItems: 'center', marginRight: 150 }}>
                     <Text style={styles.texto}>Sexo</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', left: 10 }}>
                         <RadioButton
@@ -83,7 +95,7 @@ const Cadastro = (props) => {
                 <View style={styles.input}>
                     <Text style={styles.texto}>Data nascimento</Text>
                     <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setOpen(true)} >
-                       <TextInputMask
+                        <TextInputMask
                             type={'datetime'}
                             options={{
                                 format: 'DD/MM/YYYY'
@@ -120,20 +132,38 @@ const Cadastro = (props) => {
 
                 <View style={styles.input}>
                     <Text style={styles.texto}>E-mail</Text>
-                    <TextInput style={styles.textInput} value={email} onChangeText={setEmail} keyboardType='email-address'/>
+                    <TextInput style={styles.textInput} value={email} onChangeText={setEmail} keyboardType='email-address' />
                 </View>
 
                 <View style={styles.input}>
                     <Text style={styles.texto}>Senha</Text>
-                    <TextInput style={styles.textInput} value={nome} secureTextEntry={true} onChangeText={setSenha} textContentType='newPassword' />
+                    <TextInput style={styles.textInput} value={senha} secureTextEntry={true} onChangeText={setSenha} textContentType='newPassword' />
                 </View>
 
                 <View style={styles.input}>
                     <Text style={styles.texto}>Repetir Senha</Text>
-                    <TextInput style={styles.textInput} value={repeteSenha} secureTextEntry={true} onChangeText={setRepeteSenha} />
-                    
+                    <TextInput style={{
+                        fontFamily: 'AveriaLibre-Regular',
+                        fontSize: 18,
+                        color: '#419ED7',
+                        padding: 5,
+                        backgroundColor: 'white',
+                        borderStyle: 'solid',
+                        width: 250,
+                        height: 26,
+                        left: 10,
+                        borderWidth: borda,
+                        borderColor: 'red'
+                    }} value={repeteSenha} secureTextEntry={true} onChangeText={setRepeteSenha} />
+
                 </View>
-                <Text style={{color: '#FD7979', fontFamily: 'AveriaLibre-Regular', alignSelf: 'flex-start', left: 140, opacity: 0}}>Senha não confere!</Text>
+                <Text style={{
+                    color: '#FD7979',
+                    fontFamily: 'AveriaLibre-Regular',
+                    alignSelf: 'flex-start',
+                    left: 140,
+                    opacity: validaSenha
+                }}>Senha não confere!</Text>
 
 
 
@@ -152,7 +182,6 @@ const Cadastro = (props) => {
 }
 
 const styles = StyleSheet.create({
-
     botao: {
         backgroundColor: '#49B976',
         borderColor: '#37BD6D',
