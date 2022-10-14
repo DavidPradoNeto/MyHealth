@@ -1,27 +1,17 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { createDrawerNavigator } from "@react-navigation/drawer"
 
 const Drawer = createDrawerNavigator()
 
 const menuIcon = require('../src/images/drawer_icon.png')
 
-const Home = (props) => {
-
-    const NovaVacina = () => {
-        props.navigation.navigate('Nova Vacina')
-    }
-
+const ProximasVacinas = (props) => {
     return (
 
         <View style={{ backgroundColor: '#ADD4D0', height: '100%' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginVertical: '5%' }}>
-                <TextInput style={{ backgroundColor: 'white', width: '90%', height: 40, alignItems: 'center', paddingHorizontal: 40, fontSize: 18, paddingVertical: 0, fontFamily: 'AveriaLibre-Bold' }} placeholder={'PESQUISAR VACINA'} />
-                <Image style={{ position: 'absolute', height: 25, width: 25, tintColor: 'gray', left: 5 }} source={require('../src/images/search.png')} />
-            </View>
 
-
-            <TouchableOpacity style={styles.botao} onPress={NovaVacina}>
+            <TouchableOpacity style={styles.botao} >
                 <Text style={styles.texto}>Nova Vacina</Text>
             </TouchableOpacity>
 
@@ -71,4 +61,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Home
+export default ProximasVacinas

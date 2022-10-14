@@ -106,7 +106,7 @@ const Cadastro = (props) => {
 
                         />
                         <Image
-                            style={{ left: -30, width: 23, height: 23 }}
+                            style={{ left: -30, width: 23, height: 23, tintColor: 'gray'  }}
                             source={require('../src/images/calendar.png')}
                         />
                         <DatePicker
