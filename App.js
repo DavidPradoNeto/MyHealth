@@ -17,10 +17,6 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen
-          name="Logado"
-          component={Logado}
-        />
-        <Stack.Screen
           name="Login"
           component={Login}
         />
@@ -31,6 +27,10 @@ const App = () => {
         <Stack.Screen
           name="Recuperar"
           component={Recuperar}
+        />
+        <Stack.Screen
+          name="Logado"
+          component={Logado}
         />
       </Stack.Navigator>
 

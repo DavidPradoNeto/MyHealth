@@ -13,7 +13,7 @@ const Login = (props) => {
 
   const [email, setEmail] = useState()
   const [senha, setSenha] = useState()
-  
+
   const NovoUsuario = () => {
     props.navigation.navigate('Cadastrar')
   }
@@ -29,7 +29,7 @@ const Login = (props) => {
         props.navigation.navigate('Logado')
       })
       .catch(() => {
-        console.log("Falha ao autenticar: " + error.message)
+        alert("Login Invalido. Tente Novamente.")
       })
   }
 
@@ -51,7 +51,7 @@ const Login = (props) => {
           <Text style={styles.appName}>MyHealth</Text>
           <Text style={styles.text}>Controle as suas vacinas e fique seguro</Text>
           <View style={styles.inputs}>
-            
+
             <View style={styles.input}>
               <Text style={styles.texto}>E-mail</Text>
               <TextInput style={styles.textInput} value={email} onChangeText={setEmail} keyboardType='email-address' />
@@ -90,11 +90,11 @@ const styles = StyleSheet.create({
     flex: 1
   },
   input: {
-      paddingHorizontal: 10,
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: '2%',
-      marginRight: 20
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: '2%',
+    marginRight: 20
   },
   appName: {
     top: 20,
@@ -114,9 +114,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
   texto: {
-      fontFamily: 'AveriaLibre-Regular',
-      fontSize: 16,
-      color: 'white'
+    fontFamily: 'AveriaLibre-Regular',
+    fontSize: 16,
+    color: 'white'
   },
   logo: {
     position: 'absolute',
@@ -146,15 +146,15 @@ const styles = StyleSheet.create({
     shadowColor: '#000000',
   },
   textInput: {
-      fontFamily: 'AveriaLibre-Regular',
-      fontSize: 18,
-      color: '#419ED7',
-      padding: 5,
-      backgroundColor: 'white',
-      borderStyle: 'solid',
-      width: 250,
-      height: 26,
-      left: 10
+    fontFamily: 'AveriaLibre-Regular',
+    fontSize: 18,
+    color: '#419ED7',
+    padding: 5,
+    backgroundColor: 'white',
+    borderStyle: 'solid',
+    width: 250,
+    height: 26,
+    left: 10
   },
   buttonCriar: {
     backgroundColor: '#419ED7',

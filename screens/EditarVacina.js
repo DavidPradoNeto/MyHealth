@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, TextInput } from 'react-native'
 import { createDrawerNavigator } from "@react-navigation/drawer"
-import { NavigationContainer } from "@react-navigation/native"
 import { TextInputMask } from 'react-native-masked-text'
 import DatePicker from 'react-native-date-picker'
 import { RadioButton } from 'react-native-paper'
+
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const Drawer = createDrawerNavigator()
 
@@ -13,6 +14,9 @@ const menuIcon = require('../src/images/drawer_icon.png')
 
 const EditarVacina = (props) => {
 
+    const voltar = () => {
+        props.navigation.goBack()
+    }
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -27,6 +31,13 @@ const EditarVacina = (props) => {
     const [openProx, setOpenProx] = useState(false)
     const [dataProxVacina, setDataProxVacina] = useState()
 
+    const [uri, setUri] = useState('')
+
+    const openImagePicker = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+            setUri(response.assets[0].uri)
+        })
+    }
 
 
     return (
@@ -120,15 +131,18 @@ const EditarVacina = (props) => {
 
                 <View style={styles.input}>
                     <Text style={styles.texto}>Comprovante</Text>
-                    <Pressable onPress={() => { alert('nao implementado') }} style={{ backgroundColor: '#419ED7', alignItems: 'center', width: 140, height: 20, left: 10, marginRight: 68 }}>
+
+                    <TouchableOpacity style={{ backgroundColor: '#419ED7', alignItems: 'center', width: 140, height: 20, left: 10, marginRight: 68 }} onPress={openImagePicker}>
                         <Text style={styles.textoSmall}>Selecionar imagem...</Text>
-                    </Pressable>
+                    </TouchableOpacity>
+
                 </View>
 
-                {/* modelo imagem carregada */}
-                <Image
-                    style={{ width: 200, height: 100, marginLeft: 143 }}
-                    source={require('../src/images/rotulo.jpg')} />
+                {uri ?
+                    <Image source={{ uri: uri }} style={{ width: 200, height: 100, marginLeft: 143 }} />
+                    :
+                    <Image style={{ width: 200, height: 100, marginLeft: 143, borderColor: 'green', borderWidth: 1}} />
+                }
 
                 <View style={styles.input}>
                     <Text style={styles.texto}>Proxima vacinação</Text>
