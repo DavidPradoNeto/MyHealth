@@ -1,19 +1,22 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
-import { createDrawerNavigator } from "@react-navigation/drawer"
+import { View, StyleSheet, FlatList } from 'react-native'
+import listaVacinas from '../assets/listaVacinas'
+import CardProximaVacina from '../components/CardProximaVacina'
 
-const Drawer = createDrawerNavigator()
-
-const menuIcon = require('../src/images/drawer_icon.png')
 
 const ProximasVacinas = (props) => {
     return (
 
         <View style={{ backgroundColor: '#ADD4D0', height: '100%' }}>
 
-            <TouchableOpacity style={styles.botao} >
-                <Text style={styles.texto}>Nova Vacina</Text>
-            </TouchableOpacity>
+            <View style={{ height: 500, padding: 15 }}>
+                <FlatList data={listaVacinas} renderItem={(item) => 
+                    item.item.proximaVacina ?
+                        <CardProximaVacina item={item} />
+                        :
+                        null
+                } />
+            </View>
 
         </View>
     )
@@ -60,5 +63,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
 })
+
+
 
 export default ProximasVacinas

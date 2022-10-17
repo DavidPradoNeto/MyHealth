@@ -14,6 +14,8 @@ const Login = (props) => {
   const [email, setEmail] = useState()
   const [senha, setSenha] = useState()
 
+  const [validaSenha, setValidaSenha] = useState(0)
+
   const NovoUsuario = () => {
     props.navigation.navigate('Cadastrar')
   }
@@ -24,12 +26,13 @@ const Login = (props) => {
 
 
   const autenticarUsuario = () => {
+
     signInWithEmailAndPassword(auth, email, senha)
       .then((userCredential) => {
         props.navigation.navigate('Logado')
       })
       .catch(() => {
-        alert("Login Invalido. Tente Novamente.")
+        setValidaSenha(1)
       })
   }
 
@@ -61,6 +64,14 @@ const Login = (props) => {
               <Text style={styles.texto}>Senha </Text>
               <TextInput style={styles.textInput} value={senha} secureTextEntry={true} onChangeText={setSenha} textContentType='newPassword' />
             </View>
+
+            <Text style={{
+              color: '#FD7979',
+              fontFamily: 'AveriaLibre-Regular',
+              alignSelf: 'flex-start',
+              left: 80,
+              opacity: validaSenha
+            }}>Usuario/Senha invalido!</Text>
 
             <TouchableOpacity style={styles.buttonEntrar} onPress={autenticarUsuario}>
               <Text style={styles.textButton}>Entrar</Text>

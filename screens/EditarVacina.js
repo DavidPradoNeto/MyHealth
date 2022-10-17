@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, TextInput } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, TextInput, Modal } from 'react-native'
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import { TextInputMask } from 'react-native-masked-text'
 import DatePicker from 'react-native-date-picker'
@@ -14,10 +14,14 @@ const menuIcon = require('../src/images/drawer_icon.png')
 
 const EditarVacina = (props) => {
 
-    const voltar = () => {
-        props.navigation.goBack()
+
+    const { item } = props.route.params
+
+    const excluir = () => {
+        props.navigation.pop()
     }
 
+    const [modalVisible, setModalVisible] = useState(false)
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [dataVacina, setDataVacina] = useState()
@@ -38,6 +42,14 @@ const EditarVacina = (props) => {
             setUri(response.assets[0].uri)
         })
     }
+
+    useEffect(() => {
+        setDataVacina(item.data)
+        setVacina(item.vacina)
+        setChecked(item.dose)
+        setUri(item.urlImage)
+        setDataProxVacina(item.proximaVacina)
+    }, []);
 
 
     return (
@@ -106,7 +118,7 @@ const EditarVacina = (props) => {
                             status={dose === '2a. dose' ? 'checked' : 'unchecked'}
                             onPress={() => setChecked('2a. dose')}
                         />
-                        <Text style={styles.textoSmall}>3a. dose</Text>
+                        <Text style={styles.textoSmall}>2a. dose</Text>
                         <RadioButton
                             value="3a. dose"
                             uncheckedColor='#FFFFFF'
@@ -141,7 +153,7 @@ const EditarVacina = (props) => {
                 {uri ?
                     <Image source={{ uri: uri }} style={{ width: 200, height: 100, marginLeft: 143 }} />
                     :
-                    <Image style={{ width: 200, height: 100, marginLeft: 143, borderColor: 'green', borderWidth: 1}} />
+                    <Image style={{ width: 200, height: 100, marginLeft: 143, borderColor: 'green', borderWidth: 1 }} />
                 }
 
                 <View style={styles.input}>
@@ -158,7 +170,7 @@ const EditarVacina = (props) => {
 
                         />
                         <Image
-                            style={{ left: -30, width: 23, height: 23, tintColor: 'gray'  }}
+                            style={{ left: -30, width: 23, height: 23, tintColor: 'gray' }}
                             source={require('../src/images/calendar.png')}
                         />
                         <DatePicker
@@ -181,15 +193,45 @@ const EditarVacina = (props) => {
 
 
                 </View>
-                <TouchableOpacity style={styles.botao} >
-                    <Text style={styles.texto}>Cadastrar</Text>
+                <TouchableOpacity style={styles.botao} onPress={()=>{alert('nao implementado'); props.navigation.pop()}}>
+                    <Text style={styles.texto}>Salvar alterações</Text>
                 </TouchableOpacity>
-                
-                <TouchableOpacity style={styles.botaoCancela} >
+
+
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}
+                >
+                    <View style={{position: 'absolute', width: '100%', height: '100%', backgroundColor: 'black', opacity: 0.5}}/>
+                        <View style={{ alignSelf: 'center', top: '40%', backgroundColor: 'white', elevation: 4, width: 300, height: 150, flexDirection: 'column' }}>
+                            <Text style={{ color: '#FF8383', fontFamily: 'AveriaLibre-Regular', fontSize: 20, textAlign: 'center', width: 250, alignSelf: 'center', top: '15%' }}>Tem certeza que deseja remover essa vacina?</Text>
+                            <View style={{flexDirection: 'row', alignSelf: 'center', top: 40}}>
+                                <Pressable
+                                    style={{marginHorizontal: '2%', backgroundColor: '#FF8383', width: 120, height: 40, alignItems: 'center'}}
+                                    onPress={excluir}
+                                >
+                                    <Text style={{fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5}}>SIM</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={{marginHorizontal: '2%', backgroundColor: '#419ED7', width: 120, height: 40, alignItems: 'center'}}
+                                    onPress={() => setModalVisible(!modalVisible)}
+                                >
+                                    <Text style={{fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5}}>CANCELAR</Text>
+                                </Pressable>
+                            </View>
+                    </View>
+                </Modal>
+
+
+                <TouchableOpacity style={styles.botaoCancela} onPress={() => (setModalVisible(true))}>
                     <Image
-                            style={{ width: 23, height: 23, marginRight: 5}}
-                            source={require('../src/images/lixeira.png')}
-                        />
+                        style={{ width: 23, height: 23, marginRight: 5 }}
+                        source={require('../src/images/lixeira.png')}
+                    />
                     <Text style={styles.texto}>Excluir</Text>
                 </TouchableOpacity>
             </View>
@@ -232,7 +274,7 @@ const styles = StyleSheet.create({
 
     dateInput: {
         fontFamily: 'AveriaLibre-Regular',
-        fontSize: 20,
+        fontSize: 16,
         color: '#419ED7',
         padding: 5,
         backgroundColor: 'white',
@@ -265,7 +307,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         fontFamily: 'AveriaLibre-Regular',
-        fontSize: 18,
+        fontSize: 16,
         color: '#419ED7',
         padding: 5,
         backgroundColor: 'white',

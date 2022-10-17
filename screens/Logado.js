@@ -1,11 +1,11 @@
 import React, { Image, Text } from "react-native"
 import { createDrawerNavigator } from "@react-navigation/drawer"
-import Home from "./Home"
-import NovaVacina from "./NovaVacina"
 import ProximasVacinas from "./ProximasVacinas"
 import EditarVacina from "./EditarVacina"
 import { auth } from "../config/firebase"
 import { signOut } from "firebase/auth"
+import MinhasVacinas from "./MinhasVacinas"
+import MyDrawer from "../components/MyDrawer"
 
 const Drawer = createDrawerNavigator()
 
@@ -17,7 +17,13 @@ const Logado = (props) => {
       }
 
     return (
-        <Drawer.Navigator screenOptions={{
+        <Drawer.Navigator 
+        
+        drawerContent={(props) => <MyDrawer {...props}/>}
+        
+        
+        
+        screenOptions={{
             headerStyle: {
                 backgroundColor: '#C1E7E3',
             },
@@ -36,8 +42,8 @@ const Logado = (props) => {
         }>
 
             <Drawer.Screen
-                name="Home"
-                component={Home}
+                name="MinhasVacinas"
+                component={MinhasVacinas}
                 options={{
                     drawerLabel: 'Minhas Vacinas',
                     drawerLabelStyle: {
@@ -52,14 +58,6 @@ const Logado = (props) => {
                         />
                     )
 
-                }}
-            />
-
-            <Drawer.Screen
-                name="Nova Vacina"
-                component={NovaVacina}
-                options={{
-                    drawerItemStyle: { display: 'none' }
                 }}
             />
             <Drawer.Screen
@@ -109,5 +107,8 @@ const Logado = (props) => {
         </Drawer.Navigator>
     )
 }
+
+
+
 
 export default Logado

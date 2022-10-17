@@ -15,7 +15,7 @@ const menuIcon = require('../src/images/drawer_icon.png')
 const NovaVacina = (props) => {
 
     const voltar = () => {
-        props.navigation.goBack()
+        props.navigation.pop()
     }
 
     const [date, setDate] = useState(new Date())
@@ -32,6 +32,7 @@ const NovaVacina = (props) => {
     const [dataProxVacina, setDataProxVacina] = useState()
 
     const [uri, setUri] = useState('')
+
 
     const openImagePicker = () => {
         launchImageLibrary({ mediaType: 'photo' }, (response) => {
@@ -106,7 +107,7 @@ const NovaVacina = (props) => {
                             status={dose === '2a. dose' ? 'checked' : 'unchecked'}
                             onPress={() => setChecked('2a. dose')}
                         />
-                        <Text style={styles.textoSmall}>3a. dose</Text>
+                        <Text style={styles.textoSmall}>2a. dose</Text>
                         <RadioButton
                             value="3a. dose"
                             uncheckedColor='#FFFFFF'
@@ -141,7 +142,7 @@ const NovaVacina = (props) => {
                 {uri ?
                     <Image source={{ uri: uri }} style={{ width: 200, height: 100, marginLeft: 143 }} />
                     :
-                    <Image style={{ width: 200, height: 100, marginLeft: 143, borderColor: 'green', borderWidth: 1}} />
+                    <Image style={{ width: 200, height: 100, marginLeft: 143, borderColor: 'green', borderWidth: 1 }} />
                 }
 
                 <View style={styles.input}>
@@ -188,7 +189,6 @@ const NovaVacina = (props) => {
                 <TouchableOpacity style={styles.botaoCancela} onPress={voltar}>
                     <Text style={styles.texto}>Cancelar</Text>
                 </TouchableOpacity>
-
             </View>
         </View>
     )

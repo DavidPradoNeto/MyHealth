@@ -1,16 +1,14 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native'
-import { createDrawerNavigator } from "@react-navigation/drawer"
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import CardVacina from '../components/CardVacina'
+import listaVacinas from '../assets/listaVacinas'
 
-const Drawer = createDrawerNavigator()
-
-const menuIcon = require('../src/images/drawer_icon.png')
-
-const Home = (props) => {
+const MinhasVacinas = (props) => {
 
     const NovaVacina = () => {
-        props.navigation.navigate('Nova Vacina')
+        props.navigation.push('Nova Vacina')
     }
+
 
     return (
 
@@ -19,7 +17,9 @@ const Home = (props) => {
                 <TextInput style={{ backgroundColor: 'white', width: '90%', height: 40, alignItems: 'center', paddingHorizontal: 40, fontSize: 18, paddingVertical: 0, fontFamily: 'AveriaLibre-Bold' }} placeholder={'PESQUISAR VACINA'} />
                 <Image style={{ position: 'absolute', height: 25, width: 25, tintColor: 'gray', left: 5 }} source={require('../src/images/search.png')} />
             </View>
-
+            <View style={{ height: 500, padding: 15 }}>
+                <FlatList data={listaVacinas} renderItem={(item) => <CardVacina item={item} navigation={props.navigation} />} numColumns={2} />
+            </View>
 
             <TouchableOpacity style={styles.botao} onPress={NovaVacina}>
                 <Text style={styles.texto}>Nova Vacina</Text>
@@ -71,4 +71,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Home
+export default MinhasVacinas
