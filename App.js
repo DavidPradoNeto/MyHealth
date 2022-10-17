@@ -7,6 +7,8 @@ import Cadastro from "./screens/Cadastro";
 import Login from "./screens/Login";
 import Recuperar from "./screens/Recuperar";
 import Logado from "./screens/Logado";
+import NovaVacina from "./screens/old.NovaVacina";
+import EditarVacina from "./screens/EditarVacina";
 
 
 const Stack = createStackNavigator()
@@ -16,6 +18,10 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="Logado"
+          component={Logado}
+        />
         <Stack.Screen
           name="Login"
           component={Login}
@@ -29,8 +35,12 @@ const App = () => {
           component={Recuperar}
         />
         <Stack.Screen
-          name="Logado"
-          component={Logado}
+          name="Nova Vacina"
+          component={NovaVacina}
+        />
+        <Stack.Screen
+          name="Editar Vacina"
+          component={EditarVacina}
         />
       </Stack.Navigator>
 
