@@ -7,7 +7,7 @@ import Cadastro from "./screens/Cadastro";
 import Login from "./screens/Login";
 import Recuperar from "./screens/Recuperar";
 import Logado from "./screens/Logado";
-import NovaVacina from "./screens/old.NovaVacina";
+import NovaVacina from "./screens/NovaVacina";
 import EditarVacina from "./screens/EditarVacina";
 
 
