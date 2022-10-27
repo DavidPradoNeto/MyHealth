@@ -1,7 +1,6 @@
 import React, { Image, Text } from "react-native"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import ProximasVacinas from "./ProximasVacinas"
-import EditarVacina from "./EditarVacina"
 import { auth } from "../config/firebase"
 import { signOut } from "firebase/auth"
 import MinhasVacinas from "./MinhasVacinas"
@@ -58,14 +57,6 @@ const Logado = (props) => {
                         />
                     )
 
-                }}
-            />
-            <Drawer.Screen
-                name="Editar Vacina"
-                component={EditarVacina}
-                options={{
-                    headerTitle: 'Editar Vacina',
-                    drawerItemStyle: { display: 'none' }
                 }}
             />
             <Drawer.Screen

@@ -1,16 +1,16 @@
 import React from 'react'
 import { View, StyleSheet, FlatList } from 'react-native'
-import listaVacinas from '../assets/listaVacinas'
 import CardProximaVacina from '../components/CardProximaVacina'
 
 
 const ProximasVacinas = (props) => {
+    
     return (
 
         <View style={{ backgroundColor: '#ADD4D0', height: '100%' }}>
 
             <View style={{ height: 500, padding: 15 }}>
-                <FlatList data={listaVacinas} renderItem={(item) => 
+                <FlatList data={props.listaVacinas} renderItem={(item) => 
                     item.item.proximaVacina ?
                         <CardProximaVacina item={item} />
                         :

@@ -5,7 +5,7 @@ const CardVacina = (props) => {
     const { item } = props.item
 
     const editar = () => {
-        props.navigation.push('Editar Vacina', { item: item })
+        props.navigation.push('Vacina', { item: item })
     }
 
     return (

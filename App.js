@@ -8,7 +8,6 @@ import Login from "./screens/Login";
 import Recuperar from "./screens/Recuperar";
 import Logado from "./screens/Logado";
 import NovaVacina from "./screens/NovaVacina";
-import EditarVacina from "./screens/EditarVacina";
 
 
 const Stack = createStackNavigator()
@@ -35,12 +34,8 @@ const App = () => {
           component={Logado}
         />
         <Stack.Screen
-          name="Nova Vacina"
+          name="Vacina"
           component={NovaVacina}
-        />
-        <Stack.Screen
-          name="Editar Vacina"
-          component={EditarVacina}
         />
       </Stack.Navigator>
 

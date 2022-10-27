@@ -1,12 +1,13 @@
 import React from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native'
 import CardVacina from '../components/CardVacina'
-import listaVacinas from '../assets/listaVacinas'
 
 const MinhasVacinas = (props) => {
 
+    const vacinas = []
+    
     const NovaVacina = () => {
-        props.navigation.push('Nova Vacina')
+        props.navigation.push('Vacina')
     }
 
 
@@ -18,7 +19,7 @@ const MinhasVacinas = (props) => {
                 <Image style={{ position: 'absolute', height: 25, width: 25, tintColor: 'gray', left: 5 }} source={require('../src/images/search.png')} />
             </View>
             <View style={{ height: 500, padding: 15 }}>
-                <FlatList data={listaVacinas} renderItem={(item) => <CardVacina item={item} navigation={props.navigation} />} numColumns={2} />
+                <FlatList data={vacinas} renderItem={(item) => <CardVacina item={item} navigation={props.navigation} />} numColumns={2} />
             </View>
 
             <TouchableOpacity style={styles.botao} onPress={NovaVacina}>

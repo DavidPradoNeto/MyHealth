@@ -5,9 +5,11 @@ import { TextInputMask } from 'react-native-masked-text'
 import DatePicker from 'react-native-date-picker'
 
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../config/firebase'
+import { auth, db } from '../config/firebase'
 
 import { RadioButton } from 'react-native-paper';
+import { doc, setDoc } from 'firebase/firestore'
+import Loader from '../components/Loader'
 
 const icon = require('../src/images/vaccine-icon.png')
 const Cadastro = (props) => {
@@ -15,8 +17,8 @@ const Cadastro = (props) => {
     const [nome, setNome] = useState()
     const [nascimento, setNascimento] = useState()
     const [email, setEmail] = useState()
-    const [senha, setSenha] = useState()
-    const [repeteSenha, setRepeteSenha] = useState()
+    const [senha, setSenha] = useState('')
+    const [repeteSenha, setRepeteSenha] = useState('')
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -26,25 +28,54 @@ const Cadastro = (props) => {
     const [validaSenha, setValidaSenha] = useState(0)
     const [borda, setBorderRed] = useState(0)
 
+    const [loader, setLoader] = useState(false)
 
-
-    const criarUsuario = () => {
-        if(senha != repeteSenha) {
+    useEffect(() => {
+        if (senha != repeteSenha) {
             setValidaSenha(1)
             setBorderRed(1)
-        }else{
+            return
+        } else {
             setValidaSenha(0)
             setBorderRed(0)
         }
-        createUserWithEmailAndPassword(auth, email, senha)
-            .then((userCredential) => {
-                console.log("Usuário adicionado com sucesso!")
-                props.navigation.pop()
-            })
-            .catch((error) => {
-                console.log("Ocorreu um erro ao cadastrar usuário")
-                console.log("Erro: " + error.message)
-            })
+    }, [repeteSenha, senha])
+
+
+    const criarUsuario = () => {
+        if (!nome || !sexo || !nascimento || !email || !senha || !repeteSenha || senha.length < 6) {
+            console.log("Preencha todos os campos")
+        }
+        else {
+            if (!validaSenha) {
+                setLoader(true)
+
+                
+                createUserWithEmailAndPassword(auth, email, senha)
+                    .then((userCredential) => {
+                        setDoc(doc(db, "usuarios", userCredential.user.email), {
+                            nome: nome,
+                            sexo: sexo,
+                            dataNascimento: nascimento,
+                            email: email
+                        })
+                            .then((result) => {
+                                console.log("Dados armazenados na database com sucesso")
+                            })
+                            .catch((error) => {
+                                console.log("Erro ao salvar dados. " + error)
+                            })
+                        props.navigation.pop()
+                    })
+                    .catch((error) => {
+                        console.log("Ocorreu um erro ao cadastrar usuário")
+                        console.log("Erro: " + error.message)
+                    })
+
+
+            }
+        }
+
     }
 
     const voltar = () => {
@@ -61,7 +92,6 @@ const Cadastro = (props) => {
                 />
                 <Text style={styles.appName}>MyHealth</Text>
             </View>
-
             <View style={{ alignItems: 'flex-end', marginVertical: 50 }}>
                 <View style={styles.input}>
                     <Text style={styles.texto}>Nome completo</Text>
@@ -106,7 +136,7 @@ const Cadastro = (props) => {
 
                         />
                         <Image
-                            style={{ left: -30, width: 23, height: 23, tintColor: 'gray'  }}
+                            style={{ left: -30, width: 23, height: 23, tintColor: 'gray' }}
                             source={require('../src/images/calendar.png')}
                         />
                         <DatePicker
@@ -164,9 +194,13 @@ const Cadastro = (props) => {
                     left: 140,
                     opacity: validaSenha
                 }}>Senha não confere!</Text>
-
-
-
+                {
+                    loader
+                        ?
+                        <Loader />
+                        :
+                        null
+                }
                 <TouchableOpacity style={styles.botao} onPress={criarUsuario}>
                     <Text style={styles.texto}>Cadastrar</Text>
                 </TouchableOpacity>
