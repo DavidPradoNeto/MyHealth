@@ -1,5 +1,5 @@
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, onSnapshot, query } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { auth, db } from "../config/firebase"
@@ -10,15 +10,12 @@ import { auth, db } from "../config/firebase"
 const MyDrawer = (props) => {
 
     const [nome, setNome] = useState('')
+    const q = query(doc(db, "usuarios", auth.currentUser.email))
 
     useEffect(() => {
-        getDoc(doc(db, "usuarios", auth.currentUser.email))
-            .then((result) => {
-                setNome(result.data().nome)
+        onSnapshot(q, (result) => {
+           setNome(result.data().nome.split(' ')[0])
             })
-            .catch((error) =>
-                console.log("Erro ao buscar dados do usuario " + error)
-            )
     }, [])
 
 

@@ -1,11 +1,42 @@
-import React from 'react'
+import { collection, doc, onSnapshot, query, where } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native'
+
 import CardVacina from '../components/CardVacina'
+import Loader from '../components/Loader'
+
+import { auth, db } from '../config/firebase'
+
 
 const MinhasVacinas = (props) => {
 
-    const vacinas = []
-    
+    const [vacinas, setVacinas] = useState([])
+    const [loader, setLoader] = useState(true)
+    const [searchString, setSearchString] = useState('')
+
+
+    const q = query(collection(doc(db, "usuarios", auth.currentUser.email), "vacinas"))
+
+
+    useEffect(() => {
+        onSnapshot(q, (result) => {
+            const listaVacinas = []
+            result.forEach((doc) => {
+                listaVacinas.push({
+                    id: doc.id,
+                    vacina: doc.data().vacina,
+                    data: doc.data().data,
+                    dose: doc.data().dose,
+                    urlImage: doc.data().urlImage,
+                    proximaVacina: doc.data().proximaVacina
+                })
+            })
+            setVacinas(listaVacinas)
+            setLoader(false)
+        })
+    }, [])
+
+
     const NovaVacina = () => {
         props.navigation.push('Vacina')
     }
@@ -15,11 +46,15 @@ const MinhasVacinas = (props) => {
 
         <View style={{ backgroundColor: '#ADD4D0', height: '100%' }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginVertical: '5%' }}>
-                <TextInput style={{ backgroundColor: 'white', width: '90%', height: 40, alignItems: 'center', paddingHorizontal: 40, fontSize: 18, paddingVertical: 0, fontFamily: 'AveriaLibre-Bold' }} placeholder={'PESQUISAR VACINA'} />
+                <TextInput value={searchString} onChangeText={setSearchString} style={{ backgroundColor: 'white', width: '90%', height: 40, alignItems: 'center', paddingHorizontal: 40, fontSize: 18, paddingVertical: 0, fontFamily: 'AveriaLibre-Bold' }} placeholder={'PESQUISAR VACINA'} />
                 <Image style={{ position: 'absolute', height: 25, width: 25, tintColor: 'gray', left: 5 }} source={require('../src/images/search.png')} />
             </View>
-            <View style={{ height: 500, padding: 15 }}>
-                <FlatList data={vacinas} renderItem={(item) => <CardVacina item={item} navigation={props.navigation} />} numColumns={2} />
+            {loader ?
+                <Loader />
+                :
+                null}
+            <View style={{ height: 400, padding: 15 }}>
+            <FlatList data={vacinas} renderItem={({item}) => <CardVacina item={item} navigation={props.navigation} />} keyExtractor={item => item.id} numColumns={2} />
             </View>
 
             <TouchableOpacity style={styles.botao} onPress={NovaVacina}>

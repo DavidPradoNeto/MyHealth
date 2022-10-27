@@ -1,21 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, FlatList } from 'react-native'
 import CardProximaVacina from '../components/CardProximaVacina'
 
+import { collection, doc, onSnapshot, query, where } from 'firebase/firestore'
+import { auth, db } from '../config/firebase'
 
 const ProximasVacinas = (props) => {
     
+
+    const [vacinas, setVacinas] = useState([])
+
+    const q = query(collection(doc(db, "usuarios", auth.currentUser.email), "vacinas"), where("proximaVacina", "!=", ""))
+
+
+    useEffect(() => {
+        onSnapshot(q, (result) => {
+            const listaVacinas = []
+            result.forEach((doc) => {
+                listaVacinas.push({
+                    vacina: doc.data().vacina,
+                    proximaVacina: doc.data().proximaVacina
+                })
+            })
+            setVacinas(listaVacinas)
+        })
+    }, [])
+
+
+
     return (
 
         <View style={{ backgroundColor: '#ADD4D0', height: '100%' }}>
 
             <View style={{ height: 500, padding: 15 }}>
-                <FlatList data={props.listaVacinas} renderItem={(item) => 
-                    item.item.proximaVacina ?
-                        <CardProximaVacina item={item} />
-                        :
-                        null
-                } />
+                <FlatList data={vacinas} renderItem={(item) => <CardProximaVacina item={item} />} />
             </View>
 
         </View>

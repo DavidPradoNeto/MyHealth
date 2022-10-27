@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 const Loader = () => (
-  <View style={[styles.container, styles.horizontal]}>
+  <View style={styles.container}>
     <ActivityIndicator size="large" color="#419ED7" />
   </View>
 );

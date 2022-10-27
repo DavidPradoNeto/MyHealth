@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
 import { auth } from "../config/firebase";
@@ -24,6 +24,11 @@ const Login = (props) => {
     props.navigation.navigate('Recuperar')
   }
 
+
+useEffect(() => {
+  if(auth.currentUser)
+    props.navigation.navigate('Logado')
+}, [])
 
   const autenticarUsuario = () => {
 

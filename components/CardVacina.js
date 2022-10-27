@@ -2,10 +2,10 @@ import { StyleSheet, Text, View, Dimensions, Image, Pressable } from 'react-nati
 
 const CardVacina = (props) => {
 
-    const { item } = props.item
+    const { item } = props
 
-    const editar = () => {
-        props.navigation.push('Vacina', { item: item })
+    const editar =  () => {
+        props.navigation.push('Vacina', { id: item.id })
     }
 
     return (
@@ -13,13 +13,13 @@ const CardVacina = (props) => {
             <Text style={{ ...styles.text, fontSize: 26 }}>{item.vacina}</Text>
             <Text style={{ ...styles.text, backgroundColor: '#419ED7', color: 'white', width: 80, textAlign: 'center' }}>{item.dose}</Text>
             <Text style={{ ...styles.text, color: 'gray', marginTop: 2 }}>{item.data}</Text>
-            <Image style={{ flex: 1, width: 120, height: 80, resizeMode: 'center' }} source={{ uri: item.urlImage }} />
+            <Image style={{ flex: 1, width: 150, height: 80 }} source={{ uri: item.urlImage }} />
 
             {item.proximaVacina ?
-                <Text style={{ ...styles.text, color: '#FF8383', alignSelf: 'flex-end', right: 10, bottom: 5 }}>{item.proximaVacina}</Text>
+                <Text style={{ ...styles.text, color: '#FF8383', alignSelf: 'flex-end', right: 10, bottom: 1 }}>{item.proximaVacina}</Text>
                 :
 
-                <Text style={{ ...styles.text, color: '#FF8383', alignSelf: 'flex-end', right: 10, bottom: 5 }}>Não há próxima dose</Text>
+                <Text style={{ ...styles.text, color: '#FF8383', alignSelf: 'flex-end', right: 10, bottom: 1 }}>Não há próxima dose</Text>
             }
         </Pressable>
     )
