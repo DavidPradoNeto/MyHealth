@@ -34,6 +34,9 @@ useEffect(() => {
 
     signInWithEmailAndPassword(auth, email, senha)
       .then((userCredential) => {
+        setEmail('')
+        setSenha('')
+        setValidaSenha(0)
         props.navigation.navigate('Logado')
       })
       .catch(() => {

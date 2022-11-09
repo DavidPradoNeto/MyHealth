@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, TextInput, Modal } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Modal } from 'react-native'
 import { TextInputMask } from 'react-native-masked-text'
 import DatePicker from 'react-native-date-picker'
 import { RadioButton } from 'react-native-paper'
 
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore'
-import { auth, db } from '../config/firebase'
+import { auth, db, storage } from '../config/firebase'
+import { uploadBytes, ref, getDownloadURL, deleteObject } from "firebase/storage"
+import Loader from '../components/Loader'
 
 const NovaVacina = (props) => {
 
 
 
+    const [loader, setLoader] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
+    const [modalImagemVisible, setModalImagem] = useState(false)
+
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
     const [dataVacina, setDataVacina] = useState()
@@ -29,6 +34,7 @@ const NovaVacina = (props) => {
     const [dataProx, setDataProx] = useState('')
 
     const [uri, setUri] = useState('')
+    const [pathFoto, setPathFoto] = useState(null)
 
 
     const [atualizando, setAtualizando] = useState(false)
@@ -45,11 +51,14 @@ const NovaVacina = (props) => {
                     setChecked(result.data().dose)
                     setUri(result.data().urlImage)
                     setDataProxVacina(result.data().proximaVacina)
+                    setPathFoto(result.data().pathFoto)
+                    setLoader(false)
                 })
                 .catch((error) => {
                     alert(error)
                 })
         }
+        setLoader(false)
     }, [])
 
     useEffect(() => {
@@ -62,62 +71,122 @@ const NovaVacina = (props) => {
 
 
     const openImagePicker = () => {
-        launchImageLibrary({ mediaType: 'photo' }, (response) => {
-            if(response.assets)
-            setUri(response.assets[0].uri)
-        })
+        launchImageLibrary()
+            .then((result) => {
+                if (result.assets)
+                    setUri(result.assets[0].uri)
 
-        // launchCamera({ mediaType: 'photo' }, (response) => {
-        //     if(response.assets)
-        //     setUri(response.assets[0].uri)
-        // })
+                setModalImagem(!modalImagemVisible)
+            })
+            .catch((error) => alert(error))
     }
 
-    const salvarVacina = () => {
+    const openCamera = () => {
+        launchCamera()
+            .then((result) => {
+                if (result.assets)
+                    setUri(result.assets[0].uri)
+
+                setModalImagem(!modalImagemVisible)
+            })
+            .catch((error) => alert(error))
+    }
+
+    const salvarVacina = async () => {
+        // Garantir que Proxima vacinação estará "vazio" caso selecione dose unica
+        if (dose === 'Dose única')
+            setDataProx('')
+
+        if (!vacina)
+            return
+
+
+
+        setLoader(true)
+        const dadosFoto = await fetch(uri)
+        const blob = await dadosFoto.blob()
+
+        const arrayString = uri.split("-")
+        const lastIndex = arrayString.length - 1;
+
+        const filename = "images/" + arrayString[lastIndex]
+
+        uploadBytes(ref(storage, filename), blob)
+            .then((result) => {
+                getDownloadURL(ref(storage, filename))
+                    .then((url) => {
+                        addDoc(collection(doc(db, "usuarios", auth.currentUser.email), "vacinas"), {
+                            vacina: vacina,
+                            data: data,
+                            dose: dose,
+                            urlImage: url,
+                            proximaVacina: dataProx,
+                            pathFoto: filename
+                        })
+                            .then((result) => {
+                                console.log("Vacina Cadastrada")
+                                props.navigation.pop()
+                            })
+                            .catch((error) => {
+                                alert(error)
+                            })
+                    })
+                    .catch((error) => {
+                        alert(error)
+                    })
+            })
+            .catch((error) => {
+                alert(error)
+            })
+
+    }
+
+    const atualizaVacina = async () => {
         // Garantir que Proxima vacinação estará "vazio" caso selecione dose unica
         if (dose === 'Dose única')
             setDataProx('')
 
         if (vacina) {
-            addDoc(collection(doc(db, "usuarios", auth.currentUser.email), "vacinas"), {
-                vacina: vacina,
-                data: data,
-                dose: dose,
-                urlImage: uri,
-                proximaVacina: dataProx
-            })
+
+            setLoader(true)
+            const dadosFoto = await fetch(uri)
+            const blob = await dadosFoto.blob()
+
+            uploadBytes(ref(storage, pathFoto), blob)
                 .then((result) => {
-                    console.log("Vacina Cadastrada")
-                    props.navigation.pop()
+                    updateDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id), {
+                        vacina: vacina,
+                        data: data,
+                        dose: dose,
+                        urlImage: uri,
+                        proximaVacina: dataProx,
+                        pathFoto: pathFoto
+                    })
+                        .then((result) => {
+                            props.navigation.pop()
+                        })
+                        .catch((error) => {
+                            alert(error)
+                        })
                 })
-                .catch((error) => console.log(error.message))
+                .catch((error) => alert(error))
         }
     }
 
-    const atualizaVacina = () => {
-        updateDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id), {
-            vacina: vacina,
-            data: data,
-            dose: dose,
-            urlImage: uri,
-            proximaVacina: dataProx
-        })
-        .then((result) => {
-            props.navigation.pop()
-        })
-        .catch((error) => {
-            alert(error)
-        })
-    }
 
     const excluirVacina = () => {
-        deleteDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id))
-        .then(() => {
-            props.navigation.pop()
-        })
-        .catch((error) => {
-            alert(error)
-        })
+
+        setLoader(true)
+        deleteObject(ref(storage, pathFoto))
+            .then(() => {
+                deleteDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id))
+                    .then(() => {
+                        props.navigation.pop()
+                    })
+                    .catch((error) => {
+                        alert(error)
+                    })
+            })
     }
 
 
@@ -128,7 +197,7 @@ const NovaVacina = (props) => {
             <View style={{ marginLeft: '5%', marginTop: 40 }}>
                 <View style={styles.input}>
                     <Text style={styles.texto}>Data de vacinação</Text>
-                    <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setOpen(true)} >
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setOpen(true)} >
                         <TextInputMask
                             type={'datetime'}
                             options={{
@@ -162,7 +231,7 @@ const NovaVacina = (props) => {
                                 setOpen(false)
                             }}
                         />
-                    </Pressable>
+                    </TouchableOpacity>
 
 
                 </View>
@@ -213,10 +282,50 @@ const NovaVacina = (props) => {
                     </View>
                 </View>
 
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalImagemVisible}
+                    onRequestClose={() => {
+                        setModalImagem(!modalImagemVisible);
+                    }}
+                >
+
+                    <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: 'black', opacity: 0.5 }} />
+                    <View style={{ alignSelf: 'center', top: '40%', backgroundColor: 'white', elevation: 4, width: 400, height: 140, flexDirection: 'column' }}>
+                        <Text style={{ color: '#419ED7', fontFamily: 'AveriaLibre-Regular', fontSize: 20, textAlign: 'center', width: 250, alignSelf: 'center', top: '15%' }}>Selecione o metodo de captura de imagem.</Text>
+                        <View style={{ flexDirection: 'row', alignSelf: 'center', top: 40 }}>
+                            <TouchableOpacity
+                                style={{ backgroundColor: '#419ED7', marginHorizontal: '2%', width: 120, height: 40, alignItems: 'center' }}
+                                onPress={openImagePicker}
+                            >
+                                <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>Galeria</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={{ backgroundColor: '#419ED7', marginHorizontal: '2%', width: 120, height: 40, alignItems: 'center' }}
+                                onPress={openCamera}
+                            >
+                                <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>Camera</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={{ marginHorizontal: '2%', backgroundColor: '#419ED7', width: 120, height: 40, alignItems: 'center' }}
+                                onPress={() => setModalImagem(!modalImagemVisible)}
+                            >
+                                <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>Voltar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+
+
+                </Modal>
+
                 <View style={styles.input}>
                     <Text style={styles.texto}>Comprovante</Text>
 
-                    <TouchableOpacity style={{ backgroundColor: '#419ED7', alignItems: 'center', width: 140, height: 20, left: 10, marginRight: 68 }} onPress={openImagePicker}>
+                    <TouchableOpacity style={{ backgroundColor: '#419ED7', alignItems: 'center', width: 140, height: 20, left: 10, marginRight: 68 }} onPress={() => setModalImagem(!modalImagemVisible)}>
                         <Text style={styles.textoSmall}>Selecionar imagem...</Text>
                     </TouchableOpacity>
 
@@ -232,7 +341,7 @@ const NovaVacina = (props) => {
                     :
                     <View style={styles.input}>
                         <Text style={styles.texto}>Proxima vacinação</Text>
-                        <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setOpenProx(true)} >
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }} onPress={() => setOpenProx(true)} >
                             <TextInputMask
                                 type={'datetime'}
                                 options={{
@@ -265,16 +374,19 @@ const NovaVacina = (props) => {
                                     setOpen(false)
                                 }}
                             />
-                        </Pressable>
+                        </TouchableOpacity>
 
 
 
                     </View>
                 }
             </View>
-
+            {loader ?
+                <Loader />
+                :
+                null}
             <View style={{ bottom: 100, position: 'absolute', alignSelf: 'center' }}>
-            {atualizando ?
+                {atualizando ?
                     <View>
                         <TouchableOpacity style={styles.botao} onPress={atualizaVacina} >
                             <Text style={styles.texto}>Atualizar</Text>
@@ -292,18 +404,18 @@ const NovaVacina = (props) => {
                             <View style={{ alignSelf: 'center', top: '40%', backgroundColor: 'white', elevation: 4, width: 300, height: 150, flexDirection: 'column' }}>
                                 <Text style={{ color: '#FF8383', fontFamily: 'AveriaLibre-Regular', fontSize: 20, textAlign: 'center', width: 250, alignSelf: 'center', top: '15%' }}>Tem certeza que deseja remover essa vacina?</Text>
                                 <View style={{ flexDirection: 'row', alignSelf: 'center', top: 40 }}>
-                                    <Pressable
+                                    <TouchableOpacity
                                         style={{ marginHorizontal: '2%', backgroundColor: '#FF8383', width: 120, height: 40, alignItems: 'center' }}
                                         onPress={excluirVacina}
                                     >
                                         <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>SIM</Text>
-                                    </Pressable>
-                                    <Pressable
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
                                         style={{ marginHorizontal: '2%', backgroundColor: '#419ED7', width: 120, height: 40, alignItems: 'center' }}
                                         onPress={() => setModalVisible(!modalVisible)}
                                     >
                                         <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>CANCELAR</Text>
-                                    </Pressable>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         </Modal>
