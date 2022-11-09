@@ -1,4 +1,4 @@
-import React, { Image, Text } from "react-native"
+import React, { Image } from "react-native"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import ProximasVacinas from "./ProximasVacinas"
 import { auth } from "../config/firebase"
