@@ -54,7 +54,8 @@ const MinhasVacinas = (props) => {
                 :
                 null}
             <View style={{ height: 400, padding: 15 }}>
-            <FlatList data={vacinas} renderItem={({item}) => <CardVacina item={item} navigation={props.navigation} />} keyExtractor={item => item.id} numColumns={2} />
+                <FlatList data={vacinas.filter((vacina) => vacina.vacina.includes(searchString))}
+                    renderItem={({ item }) => <CardVacina item={item} navigation={props.navigation} />} keyExtractor={item => item.id} numColumns={2} />
             </View>
 
             <TouchableOpacity style={styles.botao} onPress={NovaVacina}>
