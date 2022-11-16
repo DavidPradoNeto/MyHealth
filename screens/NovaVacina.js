@@ -79,7 +79,7 @@ const NovaVacina = (props) => {
                 .catch((error) => {
                     alert(error)
                 })
-        }else{
+        } else {
             getLocation()
         }
         setLoader(false)
@@ -418,7 +418,7 @@ const NovaVacina = (props) => {
                 <View>
                     <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', marginHorizontal: '20%', marginTop: 10 }}
                         onPress={() => { setModalMapVisible(true) }}>
-                        <Text style={styles.texto}>Adicionar localização</Text>
+                        <Text style={styles.texto}>Local de Vacinação</Text>
                         <Image source={require('../src/images/map-pointer.png')}
                             style={{ left: 5, width: 23, height: 23, tintColor: '#419ED7' }} />
                     </TouchableOpacity>

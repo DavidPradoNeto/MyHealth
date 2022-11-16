@@ -19,7 +19,9 @@ const ProximasVacinas = (props) => {
             result.forEach((doc) => {
                 listaVacinas.push({
                     vacina: doc.data().vacina,
-                    proximaVacina: doc.data().proximaVacina
+                    proximaVacina: doc.data().proximaVacina,
+                    latitude: doc.data().geolocation.latitude,
+                    longitude: doc.data().geolocation.longitude
                 })
             })
             setVacinas(listaVacinas)
