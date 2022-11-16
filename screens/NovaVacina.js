@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Modal } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Modal, Linking } from 'react-native'
 import { TextInputMask } from 'react-native-masked-text'
 import DatePicker from 'react-native-date-picker'
 import { RadioButton } from 'react-native-paper'
@@ -9,6 +9,8 @@ import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/
 import { auth, db, storage } from '../config/firebase'
 import { uploadBytes, ref, getDownloadURL, deleteObject } from "firebase/storage"
 import Loader from '../components/Loader'
+import Geolocation from '@react-native-community/geolocation'
+import MapView, { Marker } from 'react-native-maps'
 
 const NovaVacina = (props) => {
 
@@ -17,6 +19,7 @@ const NovaVacina = (props) => {
     const [loader, setLoader] = useState(true)
     const [modalVisible, setModalVisible] = useState(false)
     const [modalImagemVisible, setModalImagem] = useState(false)
+    const [modalMapVisible, setModalMapVisible] = useState(false)
 
     const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState(false)
@@ -40,6 +43,23 @@ const NovaVacina = (props) => {
     const [atualizando, setAtualizando] = useState(false)
 
 
+    const [latitude, setLatitude] = useState(0)
+    const [longitude, setLongitude] = useState(0)
+
+    const getLocation = () => {
+        Geolocation.getCurrentPosition((position) => {
+            setLatitude(position.coords.latitude)
+            setLongitude(position.coords.longitude)
+        })
+    }
+
+    const touchOnMap = (e) => {
+        setLatitude(e.nativeEvent.coordinate.latitude)
+        setLongitude(e.nativeEvent.coordinate.longitude)
+    }
+
+
+
     useEffect(() => {
         if (props.route.params?.id) {
             setAtualizando(true)
@@ -52,11 +72,15 @@ const NovaVacina = (props) => {
                     setUri(result.data().urlImage)
                     setDataProxVacina(result.data().proximaVacina)
                     setPathFoto(result.data().pathFoto)
+                    setLatitude(result.data().geolocation.latitude)
+                    setLongitude(result.data().geolocation.longitude)
                     setLoader(false)
                 })
                 .catch((error) => {
                     alert(error)
                 })
+        }else{
+            getLocation()
         }
         setLoader(false)
     }, [])
@@ -121,7 +145,11 @@ const NovaVacina = (props) => {
                             dose: dose,
                             urlImage: url,
                             proximaVacina: dataProx,
-                            pathFoto: filename
+                            pathFoto: filename,
+                            geolocation: {
+                                latitude: latitude,
+                                longitude: longitude
+                            }
                         })
                             .then((result) => {
                                 console.log("Vacina Cadastrada")
@@ -160,7 +188,11 @@ const NovaVacina = (props) => {
                         dose: dose,
                         urlImage: uri,
                         proximaVacina: dataProx,
-                        pathFoto: pathFoto
+                        pathFoto: pathFoto,
+                        geolocation: {
+                            latitude: latitude,
+                            longitude: longitude
+                        }
                     })
                         .then((result) => {
                             props.navigation.pop()
@@ -380,6 +412,58 @@ const NovaVacina = (props) => {
 
                     </View>
                 }
+
+                {/* GEOLOCALIZAÇÃO  */}
+
+                <View>
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-end', marginHorizontal: '20%', marginTop: 10 }}
+                        onPress={() => { setModalMapVisible(true) }}>
+                        <Text style={styles.texto}>Adicionar localização</Text>
+                        <Image source={require('../src/images/map-pointer.png')}
+                            style={{ left: 5, width: 23, height: 23, tintColor: '#419ED7' }} />
+                    </TouchableOpacity>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={modalMapVisible}
+                        onRequestClose={() => {
+                            setModalMapVisible(!modalMapVisible);
+                        }}
+                    >
+                        <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: 'black', opacity: 0.5 }} />
+
+                        <View style={{ margin: 10, height: "80%", width: "90%", alignSelf: 'center' }}>
+
+
+
+                            <MapView
+                                onPress={(e) => touchOnMap(e)}
+                                loadingEnabled={true}
+                                region={{
+                                    latitude: latitude,
+                                    longitude: longitude,
+                                    latitudeDelta: 0.01,
+                                    longitudeDelta: 0.01
+                                }}
+                                style={{ flex: 1 }}
+                            >
+                                <Marker
+                                    coordinate={{ latitude: latitude, longitude: longitude }}
+                                    pinColor={"blue"}
+                                />
+                            </MapView>
+
+
+                            <TouchableOpacity
+                                style={{ top: 15, alignSelf: 'center', backgroundColor: '#FF8383', width: 120, height: 40, alignItems: 'center' }}
+                                onPress={() => setModalMapVisible(!modalMapVisible)}
+                            >
+                                <Text style={{ fontSize: 25, fontFamily: 'AveriaLibre-Regular', color: 'white', padding: 5 }}>Voltar</Text>
+                            </TouchableOpacity>
+
+                        </View>
+                    </Modal>
+                </View>
             </View>
             {loader ?
                 <Loader />
