@@ -3,6 +3,7 @@ import { doc, onSnapshot, query } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { auth, db } from "../config/firebase"
+import { useSelector } from "react-redux"
 
 
 
@@ -10,7 +11,10 @@ import { auth, db } from "../config/firebase"
 const MyDrawer = (props) => {
 
     const [nome, setNome] = useState('')
-    const q = query(doc(db, "usuarios", auth.currentUser.email))
+    
+    const email = useSelector((state) => state.user.email)
+    
+    const q = query(doc(db, "usuarios", email))
 
     useEffect(() => {
         onSnapshot(q, (result) => {

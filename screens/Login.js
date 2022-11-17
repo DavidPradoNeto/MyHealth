@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import LinearGradient from "react-native-linear-gradient";
 import { auth } from "../config/firebase";
+import { useDispatch } from 'react-redux'
+import { reducerSetUser } from "../redux/userSlice";
+
 
 const background = require('../src/images/background.png')
 const icon = require('../src/images/vaccine-icon.png')
-
 
 const Login = (props) => {
 
@@ -25,15 +27,20 @@ const Login = (props) => {
   }
 
 
-useEffect(() => {
-  if(auth.currentUser)
-    props.navigation.navigate('Logado')
-}, [])
+  useEffect(() => {
+    if (auth.currentUser)
+      props.navigation.navigate('Logado')
+  }, [])
+
+  const dispatch = useDispatch()
 
   const autenticarUsuario = () => {
 
     signInWithEmailAndPassword(auth, email, senha)
       .then((userCredential) => {
+        
+        dispatch(reducerSetUser({ email: email }))
+
         setEmail('')
         setSenha('')
         setValidaSenha(0)

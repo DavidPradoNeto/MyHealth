@@ -9,37 +9,41 @@ import Recuperar from "./screens/Recuperar";
 import Logado from "./screens/Logado";
 import NovaVacina from "./screens/NovaVacina";
 
+import { Provider } from "react-redux"
+import { store } from "./redux/store"
 
 const Stack = createStackNavigator()
 
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name="Login"
-          component={Login}
-        />
-        <Stack.Screen
-          name="Cadastrar"
-          component={Cadastro}
-        />
-        <Stack.Screen
-          name="Recuperar"
-          component={Recuperar}
-        />
-        <Stack.Screen
-          name="Logado"
-          component={Logado}
-        />
-        <Stack.Screen
-          name="Vacina"
-          component={NovaVacina}
-        />
-      </Stack.Navigator>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+          />
+          <Stack.Screen
+            name="Cadastrar"
+            component={Cadastro}
+          />
+          <Stack.Screen
+            name="Recuperar"
+            component={Recuperar}
+          />
+          <Stack.Screen
+            name="Logado"
+            component={Logado}
+          />
+          <Stack.Screen
+            name="Vacina"
+            component={NovaVacina}
+          />
+        </Stack.Navigator>
 
-    </NavigationContainer >
+      </NavigationContainer >
+    </Provider>
   )
 }
 
