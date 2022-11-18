@@ -6,7 +6,7 @@ Aplicativo desenvolvido com React-Native, baseado no modelo que o professor pass
 
 
 
-#----------------------------------------------------------------------#
+#
 Requisitos: 
 
 1. Java 1.8
@@ -28,7 +28,7 @@ Requisitos:
    - C:\Users\<nome_do_usuário>\AppData\Local\Android\Sdk
 
 
-#----------------------------------------------------------------------#
+#
 
 Para Rodar:
 
