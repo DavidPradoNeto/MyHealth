@@ -1,12 +1,18 @@
-import { StyleSheet, Text, View, Dimensions, Image, Pressable } from 'react-native'
+import { StyleSheet, Text, Dimensions, Image, Pressable } from 'react-native'
 import { TextMask } from 'react-native-masked-text'
+
+import { useDispatch } from 'react-redux'
+import { reducerSetVacina } from '../redux/vacinaSlice'
 
 const CardVacina = (props) => {
 
     const { item } = props
 
+    const dispatch = useDispatch()
+
     const editar = () => {
-        props.navigation.push('Vacina', { id: item.id })
+        dispatch(reducerSetVacina({ id: item.id }))
+        props.navigation.push('Vacina')
     }
 
     return (

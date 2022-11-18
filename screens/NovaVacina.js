@@ -12,6 +12,8 @@ import Loader from '../components/Loader'
 import Geolocation from '@react-native-community/geolocation'
 import MapView, { Marker } from 'react-native-maps'
 
+import { useSelector } from 'react-redux'
+
 const NovaVacina = (props) => {
 
 
@@ -27,7 +29,7 @@ const NovaVacina = (props) => {
 
     const [vacina, setVacina] = useState()
 
-
+    
     const [dose, setChecked] = useState('1a. dose')
 
     const [dateProx, setDateProx] = useState(new Date())
@@ -58,13 +60,14 @@ const NovaVacina = (props) => {
         setLongitude(e.nativeEvent.coordinate.longitude)
     }
 
-
+    const idVacina = useSelector((state) => state.vacina.id)
 
     useEffect(() => {
-        if (props.route.params?.id) {
+        
+        if (idVacina) {
             setAtualizando(true)
 
-            getDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id))
+            getDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", idVacina))
                 .then((result) => {
                     setVacina(result.data().vacina)
                     setDataVacina(result.data().data)
@@ -182,7 +185,7 @@ const NovaVacina = (props) => {
 
             uploadBytes(ref(storage, pathFoto), blob)
                 .then((result) => {
-                    updateDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id), {
+                    updateDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", idVacina), {
                         vacina: vacina,
                         data: data,
                         dose: dose,
@@ -211,7 +214,7 @@ const NovaVacina = (props) => {
         setLoader(true)
         deleteObject(ref(storage, pathFoto))
             .then(() => {
-                deleteDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", props.route.params.id))
+                deleteDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", idVacina))
                     .then(() => {
                         props.navigation.pop()
                     })

@@ -2,7 +2,7 @@ import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawe
 import { doc, onSnapshot, query } from "firebase/firestore"
 import { useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { auth, db } from "../config/firebase"
+import { db } from "../config/firebase"
 import { useSelector } from "react-redux"
 
 

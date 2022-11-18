@@ -1,11 +1,13 @@
 import { collection, doc, onSnapshot, query, where } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList } from 'react-native'
+import { useDispatch } from 'react-redux'
 
 import CardVacina from '../components/CardVacina'
 import Loader from '../components/Loader'
 
 import { auth, db } from '../config/firebase'
+import { reducerSetVacina } from '../redux/vacinaSlice'
 
 
 const MinhasVacinas = (props) => {
@@ -28,7 +30,10 @@ const MinhasVacinas = (props) => {
                     data: doc.data().data,
                     dose: doc.data().dose,
                     urlImage: doc.data().urlImage,
-                    proximaVacina: doc.data().proximaVacina
+                    proximaVacina: doc.data().proximaVacina,
+                    pathFoto: doc.data().pathFoto,
+                    latitude: doc.data().latitude,
+                    longitude: doc.data().longitude
                 })
             })
             setVacinas(listaVacinas)
@@ -37,7 +42,11 @@ const MinhasVacinas = (props) => {
     }, [])
 
 
+    const dispatch = useDispatch()
+
+
     const NovaVacina = () => {
+        dispatch(reducerSetVacina({ id: null }))
         props.navigation.push('Vacina')
     }
 
