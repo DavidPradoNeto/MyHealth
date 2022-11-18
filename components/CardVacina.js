@@ -11,7 +11,7 @@ const CardVacina = (props) => {
     const dispatch = useDispatch()
 
     const editar = () => {
-        dispatch(reducerSetVacina({ id: item.id }))
+        dispatch(reducerSetVacina({ id: item.id, vacina: item }))
         props.navigation.push('Vacina')
     }
 

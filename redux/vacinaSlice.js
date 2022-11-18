@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialValues = {
-    id: null
+    id: null,
+    vacina: null
 }
 
 export const vacinaSlice = createSlice({
@@ -10,6 +11,7 @@ export const vacinaSlice = createSlice({
     reducers: {
         reducerSetVacina: (state, action) => {
             state.id = action.payload.id
+            state.vacina = action.payload.vacina
         }
     }
 })

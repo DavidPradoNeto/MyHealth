@@ -32,8 +32,7 @@ const MinhasVacinas = (props) => {
                     urlImage: doc.data().urlImage,
                     proximaVacina: doc.data().proximaVacina,
                     pathFoto: doc.data().pathFoto,
-                    latitude: doc.data().latitude,
-                    longitude: doc.data().longitude
+                    geolocation: doc.data().geolocation
                 })
             })
             setVacinas(listaVacinas)

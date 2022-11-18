@@ -29,7 +29,7 @@ const NovaVacina = (props) => {
 
     const [vacina, setVacina] = useState()
 
-    
+
     const [dose, setChecked] = useState('1a. dose')
 
     const [dateProx, setDateProx] = useState(new Date())
@@ -61,27 +61,37 @@ const NovaVacina = (props) => {
     }
 
     const idVacina = useSelector((state) => state.vacina.id)
+    const loadedVacina = useSelector((state) => state.vacina.vacina)
 
     useEffect(() => {
-        
+
         if (idVacina) {
             setAtualizando(true)
 
-            getDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", idVacina))
-                .then((result) => {
-                    setVacina(result.data().vacina)
-                    setDataVacina(result.data().data)
-                    setChecked(result.data().dose)
-                    setUri(result.data().urlImage)
-                    setDataProxVacina(result.data().proximaVacina)
-                    setPathFoto(result.data().pathFoto)
-                    setLatitude(result.data().geolocation.latitude)
-                    setLongitude(result.data().geolocation.longitude)
-                    setLoader(false)
-                })
-                .catch((error) => {
-                    alert(error)
-                })
+            // getDoc(doc(db, 'usuarios', auth.currentUser.email, "vacinas", idVacina))
+            //     .then((result) => {
+            //         setVacina(result.data().vacina)
+            //         setDataVacina(result.data().data)
+            //         setChecked(result.data().dose)
+            //         setUri(result.data().urlImage)
+            //         setDataProxVacina(result.data().proximaVacina)
+            //         setPathFoto(result.data().pathFoto)
+            //         setLatitude(result.data().geolocation.latitude)
+            //         setLongitude(result.data().geolocation.longitude)
+            //         setLoader(false)
+            //     })
+            //     .catch((error) => {
+            //         alert(error)
+            //     })
+            setVacina(loadedVacina.vacina)
+            setDataVacina(loadedVacina.data)
+            setChecked(loadedVacina.dose)
+            setUri(loadedVacina.urlImage)
+            setDataProxVacina(loadedVacina.proximaVacina)
+            setPathFoto(loadedVacina.pathFoto)
+            setLatitude(loadedVacina.geolocation.latitude)
+            setLongitude(loadedVacina.geolocation.longitude)
+            setLoader(false)
         } else {
             getLocation()
         }
