@@ -27,7 +27,10 @@ Requisitos:
 5. Criar a variável de ambiente ANDROID_SDK_ROOT com o valor:
    - C:\Users\<nome_do_usuário>\AppData\Local\Android\Sdk
 
-
+6. Configurar [Firebase](console.firebase.google.com) em "config/firebase.js"
+   - Authenticator
+   - Firestore Database
+   - Storage
 #
 
 Para Rodar:
